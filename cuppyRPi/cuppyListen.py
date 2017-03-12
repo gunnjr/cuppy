@@ -27,6 +27,9 @@ def customCallback(client, userdata, message):
 	print(message.payload)
 	print("from topic: ")
 	print(message.topic)
+        print("CB: now going to sleep for 5 secs as test")
+	time.sleep(5)
+        print("CB: back from sleep")
 	print("--------------\n\n")
 
 # Usage
