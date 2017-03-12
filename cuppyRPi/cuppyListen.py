@@ -22,15 +22,27 @@ import time
 import getopt
 
 # Custom MQTT message callback
-def customCallback(client, userdata, message):
-	print("CB: Received a new message. Payload folows on next line: ")
+def cbFill(client, userdata, message):
+	print("cbFill: Received a new message. Payload folows on next line: ")
 	print(message.payload)
-	print("from topic: ")
+	print("cbFill:from topic: ")
 	print(message.topic)
-        print("CB: now going to sleep for 5 secs as test")
-	time.sleep(5)
-        print("CB: back from sleep")
+    print("cbFill: now going to sleep for this many secs:" + str(message.payload))
+	time.sleep(message.payload)
+    print("cbFill: back from sleep")
 	print("--------------\n\n")
+
+# Custom MQTT message callback
+def cbCloseValve(client, userdata, message):
+	print("cbCloseValve: Received a new message. Payload folows on next line: ")
+	print(message.payload)
+	print("cbCloseValve:from topic: ")
+	print(message.topic)
+    print("cbCloseValve: now going to sleep for 1 sec")
+	time.sleep(1)
+    print("cbCloseValve: back from sleep")
+	print("--------------\n\n")
+
 
 # Usage
 usageInfo = """Usage:
@@ -134,13 +146,13 @@ myAWSIoTMQTTClient.configureMQTTOperationTimeout(5)  # 5 sec
 
 # Connect and subscribe to AWS IoT
 myAWSIoTMQTTClient.connect()
-myAWSIoTMQTTClient.subscribe("sdk/test/Python", 1, customCallback)
+myAWSIoTMQTTClient.subscribe("cuppy/fill", 1, cbFill)
+myAWSIoTMQTTClient.subscribe("cuppy/closeValve", 1, cbCloseValve)
 time.sleep(2)
 
 # Publish to the same topic in a loop forever
 loopCount = 0
 while True:
-        print("PUB: about to publish a New Message nubner: " + str(loopCount))
-	myAWSIoTMQTTClient.publish("sdk/test/Python", "New Message " + str(loopCount), 1)
+    print("ListenParent: Just sleeping and looping: " + str(loopCount))
 	loopCount += 1
 	time.sleep(1)
