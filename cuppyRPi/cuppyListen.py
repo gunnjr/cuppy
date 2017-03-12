@@ -28,32 +28,9 @@ GPIO.setmode(GPIO.BCM)
 # we are working with pin 2
 relayPin = 2
 
-# set mod eand state to 'high' on our pin
+# set mode and state to 'high' on our pin
 GPIO.setup(relayPin, GPIO.OUT)
 GPIO.output(relayPin, GPIO.HIGH)
-
-
-#move this code somewhere else------
-
-try:	
-   print "opening Relay for 10 secs..."
-   GPIO.output(relayPin, GPIO.LOW)
-   time.sleep(10);
-   print "Now closing."
-   GPIO.cleanup()
-
-# End program cleanly with keyboard
-except KeyboardInterrupt:
-  print "  Quit"
-
-  # Reset GPIO settings
-  GPIO.cleanup()
-
-#end move block---------------------
-
-
-
-
 
 # Custom MQTT message callback
 def cbFill(client, userdata, message):
@@ -66,7 +43,7 @@ def cbFill(client, userdata, message):
 	   GPIO.output(relayPin, GPIO.LOW)
 	   time.sleep(float(message.payload));
 	   print "cbFill: Now closing."
-	   GPIO.cleanup()
+	   GPIO.output(relayPin, GPIO.HIGH)
 
 	# End program cleanly if there's an exception
 	except:
