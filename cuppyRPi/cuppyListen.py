@@ -28,6 +28,16 @@ GPIO.setmode(GPIO.BCM)
 # we are working with pin 2
 relayPin = 2
 
+# loop through extra relays to show we're up and running
+pinList = [3, 4, 17]
+for i in pinList:
+	GPIO.setup(i, GPIO.OUT)
+	GPIO.output(i, GPIO.HIGH)
+        time.sleep(1)
+        GPIO.output(i, GPIO.LOW)
+	time.sleep(1)
+	GPIO.output(i, GPIO.HIGH)
+
 # set mode and state to 'high' on our pin
 GPIO.setup(relayPin, GPIO.OUT)
 GPIO.output(relayPin, GPIO.HIGH)
@@ -173,7 +183,7 @@ time.sleep(2)
 # Publish to the same topic in a loop forever
 loopCount = 0
 while True:
-	print("ListenParent: Just sleeping and looping: " + str(loopCount))
+	# print("ListenParent: Just sleeping and looping: " + str(loopCount))
 	loopCount += 1
 	try:	
 		time.sleep(10)   
