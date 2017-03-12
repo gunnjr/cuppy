@@ -20,6 +20,40 @@ import sys
 import logging
 import time
 import getopt
+import RPi.GPIO as GPIO
+
+# Setup GPIO for relay control
+GPIO.setmode(GPIO.BCM)
+
+# we are working with pin 2
+relayPin = 2
+
+# set mod eand state to 'high' on our pin
+GPIO.setup(relayPin, GPIO.OUT)
+GPIO.output(relayPin, GPIO.HIGH)
+
+
+#move this code somewhere else------
+
+try:	
+   print "opening Relay for 10 secs..."
+   GPIO.output(relayPin, GPIO.LOW)
+   time.sleep(10);
+   print "Now closing."
+   GPIO.cleanup()
+
+# End program cleanly with keyboard
+except KeyboardInterrupt:
+  print "  Quit"
+
+  # Reset GPIO settings
+  GPIO.cleanup()
+
+#end move block---------------------
+
+
+
+
 
 # Custom MQTT message callback
 def cbFill(client, userdata, message):
@@ -27,10 +61,18 @@ def cbFill(client, userdata, message):
 	print(message.payload)
 	print("cbFill:from topic: ")
 	print(message.topic)
-	print("cbFill: now going to sleep for this many secs:" + str(message.payload))
-	time.sleep(float(message.payload))
-	print("cbFill: back from sleep")
-	print("--------------\n\n")
+	print("cbFill: now going to open relay for this many secs:" + str(message.payload))
+	try:	
+	   GPIO.output(relayPin, GPIO.LOW)
+	   time.sleep(float(message.payload));
+	   print "cbFill: Now closing."
+	   GPIO.cleanup()
+
+	# End program cleanly if there's an exception
+	except:
+	  # Reset GPIO settings
+	  GPIO.cleanup()
+	  raise	
 
 # Custom MQTT message callback
 def cbCloseValve(client, userdata, message):
@@ -38,7 +80,8 @@ def cbCloseValve(client, userdata, message):
 	print(message.payload)
 	print("cbCloseValve:from topic: ")
 	print(message.topic)
-  	print("cbCloseValve: now going to sleep for 1 sec")
+  	print("close the valve then sleep for a second")
+	GPIO.output(relayPin, GPIO.HIGH)
 	time.sleep(1)
 	print("cbCloseValve: back from sleep")
 	print("--------------\n\n")
@@ -155,4 +198,11 @@ loopCount = 0
 while True:
 	print("ListenParent: Just sleeping and looping: " + str(loopCount))
 	loopCount += 1
-	time.sleep(10)
+	try:	
+		time.sleep(10)   
+	   
+	# End program cleanly if there's an exception
+	except:
+	  # Reset GPIO settings
+	  GPIO.cleanup()
+	  raise	
