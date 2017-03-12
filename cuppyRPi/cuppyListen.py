@@ -27,9 +27,9 @@ def cbFill(client, userdata, message):
 	print(message.payload)
 	print("cbFill:from topic: ")
 	print(message.topic)
-    print("cbFill: now going to sleep for this many secs:" + str(message.payload))
-	time.sleep(message.payload)
-    print("cbFill: back from sleep")
+	print("cbFill: now going to sleep for this many secs:" + str(message.payload))
+	time.sleep(float(message.payload))
+	print("cbFill: back from sleep")
 	print("--------------\n\n")
 
 # Custom MQTT message callback
@@ -38,9 +38,9 @@ def cbCloseValve(client, userdata, message):
 	print(message.payload)
 	print("cbCloseValve:from topic: ")
 	print(message.topic)
-    print("cbCloseValve: now going to sleep for 1 sec")
+  	print("cbCloseValve: now going to sleep for 1 sec")
 	time.sleep(1)
-    print("cbCloseValve: back from sleep")
+	print("cbCloseValve: back from sleep")
 	print("--------------\n\n")
 
 
@@ -153,6 +153,6 @@ time.sleep(2)
 # Publish to the same topic in a loop forever
 loopCount = 0
 while True:
-    print("ListenParent: Just sleeping and looping: " + str(loopCount))
+	print("ListenParent: Just sleeping and looping: " + str(loopCount))
 	loopCount += 1
-	time.sleep(1)
+	time.sleep(10)
