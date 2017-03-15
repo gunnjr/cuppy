@@ -43,20 +43,23 @@ for i in inUsePinList:
 	GPIO.setup(i, GPIO.OUT)
 	GPIO.output(i, GPIO.HIGH)
 
+# use this pin to flash on sleep loop to show program is running
+heartbeatPin = 4
+
 # Custom MQTT message callback
 def cbFill(client, userdata, message):
-	print("cbFill: Received a new message. Payload folows on next line: ")
-	print(message.payload)
-	print("cbFill:from topic: ")
-	print(message.topic)
-	print("cbFill: now going to open relay for this many secs:" + str(message.payload))
+	logging.debug("cbFill: Received a new message. Payload folows on next line: ")
+	logging.debug(message.payload)
+	logging.debug("cbFill:from topic: ")
+	logging.debug(message.topic)
+	logging.debug("cbFill: now going to open relay for this many secs:" + str(message.payload))
 	try:	
 		for i in inUsePinList:
 			GPIO.output(i, GPIO.LOW)
 		
 		time.sleep(float(message.payload))
 
-		print "cbFill: Now closing."
+		logging.debug "cbFill: Now closing."
 
 		for i in inUsePinList:
 			GPIO.output(i, GPIO.HIGH)
@@ -69,15 +72,15 @@ def cbFill(client, userdata, message):
 
 # Custom MQTT message callback
 def cbCloseValve(client, userdata, message):
-	print("cbCloseValve: Received a new message. Payload folows on next line: ")
-	print(message.payload)
-	print("cbCloseValve:from topic: ")
-	print(message.topic)
-  	print("close the valve then sleep for a second")
+	logging.debug("cbCloseValve: Received a new message. Payload folows on next line: ")
+	logging.debug(message.payload)
+	logging.debug("cbCloseValve:from topic: ")
+	logging.debug(message.topic)
+  	logging.debug("close the valve then sleep for a second")
 	GPIO.output(relayPin, GPIO.HIGH)
 	time.sleep(1)
-	print("cbCloseValve: back from sleep")
-	print("--------------\n\n")
+	logging.debug("cbCloseValve: back from sleep")
+	logging.debug("--------------\n\n")
 
 
 # Usage
@@ -192,11 +195,13 @@ while True:
 	# print("ListenParent: Just sleeping and looping: " + str(loopCount))
 	loopCount += 1
 	try:	
-		time.sleep(60)   
-		for i in unUsedPinList:
-			GPIO.output(i, GPIO.LOW)
-			time.sleep(1)
-			GPIO.output(i, GPIO.HIGH)	   
+		# sleep for 2 minutes
+		time.sleep(120)   
+		
+		# flash the heartbeat pin to show the world we're alive
+		GPIO.output(heartbeatPin, GPIO.LOW)
+		GPIO.output(heartbeatPin, GPIO.HIGH)
+		   
 	# End program cleanly if there's an exception
 	except:
 	  # Reset GPIO settings
