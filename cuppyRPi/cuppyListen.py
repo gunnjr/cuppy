@@ -59,7 +59,7 @@ def cbFill(client, userdata, message):
 		
 		time.sleep(float(message.payload))
 
-		logging.debug "cbFill: Now closing."
+		logging.debug ("cbFill: Now closing.")
 
 		for i in inUsePinList:
 			GPIO.output(i, GPIO.HIGH)
