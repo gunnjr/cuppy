@@ -25,22 +25,23 @@ import RPi.GPIO as GPIO
 # Setup GPIO for relay control
 GPIO.setmode(GPIO.BCM)
 
-# we are working with pin 2
-relayPin = 2
+# switching serially through 2 relays due to lack of confidence in hardware
+inUsePinList = [2, 3]
 
 # loop through extra relays to show we're up and running
-pinList = [3, 4, 17]
-for i in pinList:
+unUsedPinList = [4, 17]
+for i in unUsedPinList:
 	GPIO.setup(i, GPIO.OUT)
 	GPIO.output(i, GPIO.HIGH)
-        time.sleep(1)
-        GPIO.output(i, GPIO.LOW)
+    time.sleep(1)
+    GPIO.output(i, GPIO.LOW)
 	time.sleep(1)
 	GPIO.output(i, GPIO.HIGH)
 
-# set mode and state to 'high' on our pin
-GPIO.setup(relayPin, GPIO.OUT)
-GPIO.output(relayPin, GPIO.HIGH)
+# set mode and state to 'high' on our in-use pins
+for i in inUsePinList:
+	GPIO.setup(i, GPIO.OUT)
+	GPIO.output(i, GPIO.HIGH)
 
 # Custom MQTT message callback
 def cbFill(client, userdata, message):
@@ -50,10 +51,15 @@ def cbFill(client, userdata, message):
 	print(message.topic)
 	print("cbFill: now going to open relay for this many secs:" + str(message.payload))
 	try:	
-	   GPIO.output(relayPin, GPIO.LOW)
-	   time.sleep(float(message.payload));
-	   print "cbFill: Now closing."
-	   GPIO.output(relayPin, GPIO.HIGH)
+		for i in inUsePinList:
+			GPIO.output(i, GPIO.LOW)
+		
+		time.sleep(float(message.payload))
+
+		print "cbFill: Now closing."
+
+		for i in inUsePinList:
+			GPIO.output(i, GPIO.HIGH)
 
 	# End program cleanly if there's an exception
 	except:
@@ -186,8 +192,11 @@ while True:
 	# print("ListenParent: Just sleeping and looping: " + str(loopCount))
 	loopCount += 1
 	try:	
-		time.sleep(10)   
-	   
+		time.sleep(60)   
+	for i in unUsedPinList:
+		GPIO.output(i, GPIO.LOW)
+		time.sleep(1)
+		GPIO.output(i, GPIO.HIGH)	   
 	# End program cleanly if there's an exception
 	except:
 	  # Reset GPIO settings
