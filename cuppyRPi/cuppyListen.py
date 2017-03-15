@@ -33,8 +33,8 @@ unUsedPinList = [4, 17]
 for i in unUsedPinList:
 	GPIO.setup(i, GPIO.OUT)
 	GPIO.output(i, GPIO.HIGH)
-    time.sleep(1)
-    GPIO.output(i, GPIO.LOW)
+	time.sleep(1)
+	GPIO.output(i, GPIO.LOW)
 	time.sleep(1)
 	GPIO.output(i, GPIO.HIGH)
 
