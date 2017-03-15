@@ -193,10 +193,10 @@ while True:
 	loopCount += 1
 	try:	
 		time.sleep(60)   
-	for i in unUsedPinList:
-		GPIO.output(i, GPIO.LOW)
-		time.sleep(1)
-		GPIO.output(i, GPIO.HIGH)	   
+		for i in unUsedPinList:
+			GPIO.output(i, GPIO.LOW)
+			time.sleep(1)
+			GPIO.output(i, GPIO.HIGH)	   
 	# End program cleanly if there's an exception
 	except:
 	  # Reset GPIO settings
