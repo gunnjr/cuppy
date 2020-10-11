@@ -200,7 +200,8 @@ while True:
 		
 		# flash the heartbeat pin to show the world we're alive
 		GPIO.output(heartbeatPin, GPIO.LOW)
-		GPIO.output(heartbeatPin, GPIO.HIGH)
+		sleep(1)
+                GPIO.output(heartbeatPin, GPIO.HIGH)
 		   
 	# End program cleanly if there's an exception
 	except:
