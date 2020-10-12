@@ -63,9 +63,6 @@ def cbFill(client, userdata, message):
 
 		for i in inUsePinList:
 			GPIO.output(i, GPIO.HIGH)
-	
-	# This is where notification code would go
-	# End notificaiton code 
 
 	# End program cleanly if there's an exception
 	except:
@@ -187,10 +184,12 @@ myAWSIoTMQTTClient.configureConnectDisconnectTimeout(10)  # 10 sec
 myAWSIoTMQTTClient.configureMQTTOperationTimeout(5)  # 5 sec
 
 # Connect and subscribe to AWS IoT
+logging.debug("Connecting to AWS IOT.")
 myAWSIoTMQTTClient.connect()
 myAWSIoTMQTTClient.subscribe("cuppy/fill", 1, cbFill)
 myAWSIoTMQTTClient.subscribe("cuppy/closeValve", 1, cbCloseValve)
 time.sleep(2)
+logging.debug("AWS IOT connect sucessful. Going to sleep loop to await a message.")
 
 # Publish to the same topic in a loop forever
 loopCount = 0
@@ -203,7 +202,7 @@ while True:
 		
 		# flash the heartbeat pin to show the world we're alive
 		GPIO.output(heartbeatPin, GPIO.LOW)
-		sleep(1)
+		time.sleep(1)
                 GPIO.output(heartbeatPin, GPIO.HIGH)
 		   
 	# End program cleanly if there's an exception
