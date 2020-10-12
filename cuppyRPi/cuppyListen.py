@@ -63,6 +63,9 @@ def cbFill(client, userdata, message):
 
 		for i in inUsePinList:
 			GPIO.output(i, GPIO.HIGH)
+	
+	# This is where notification code would go
+	# End notificaiton code 
 
 	# End program cleanly if there's an exception
 	except:
